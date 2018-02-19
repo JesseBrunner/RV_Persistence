@@ -1,0 +1,218 @@
+---
+title: "Environmental persistence and _Ranavirus_ transmission"
+author: "Jesse Brunner"
+date: "10/4/2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(simecol)
+library(tidyverse)
+
+# devtools::install_github("yutannihilation/gglabeledcontour")
+library(gglabeledcontour) # for geom_contour_label
+```
+
+## The goal 
+The goal is to use a (fairly complex) epidemiological model with transmission by direct causual contact, necrophagy, and water and then determine: 
+
+1.  How important are each route of transmission? 
+2.  How important is environmental persistence for transmission?
+
+## The model
+
+Assuming a single large, well-mixed population whith no birth, extra deaths (not due to disease), etc.
+
+The infected class changes as:
+$$
+\frac{dI}{dt} = S b \left(\kappa \eta \frac{I}{N} + \mu \lambda_h(C) + \omega V \right) - \alpha I,
+$$
+where $S,I, \text{and } V$ are the densities of susceptible and infected hosts, and virus in the water. The per virion hazard of infection, $b$, is the same for all individuals. The three terms within the parentheses represent the exposure to virions by direct contact, necrophagy, and in water. A casual contact with an infected individual delivers $\kappa$ virions per contact and the overall contact rate is assumed to be constant, $\eta$. Contact through necrophagy delivers $\mu$ virions per contact, which is presumably much higher than $\kappa$, and these occur at some consumption rate $\lambda_h$, which is a function of carcass density. There is no contact rate in water-borne transmission, just the density of virus particles in the water, $V$, which we address below. 
+
+Lastly, infectious hosts are lost to infection at rate $\alpha$ and enter the "carcass" class, $C$.
+$$
+\frac{dC}{dt} = \alpha I - [\lambda_h(C)(S+I) - \lambda_d(C)D] C
+$$
+We lose carcasses through consumption by hosts (the first term in the brackets) and by scavenging of invertebrate scavengers, $D$ for dytiscid, (the second term in the brackets). Note that we do not include other forms of loss, like general decay. It is probably reasonable to assume that the consumption rate per host or scavenger, $\lambda_i(C)$, is a Holling type II functional response in the form, 
+$$
+\lambda_i(C) = \frac{a_i}{1+a_i h_i C},
+$$
+where $a_i$ is the "attack rate" and $h_i$ is the handling time for individual consumers ($i=host \text{ or } scavenger$).  For completeness, the full form is thus:
+$$
+\frac{dC}{dt} = \alpha I - \left( \frac{a_h(S+I)}{1+a_h h_h C} - \frac{a_dD}{1+a_d h_d C} \right) C.
+$$
+
+The rate of change of virus concentrations in the water is then
+$$
+\frac{dV}{dt} = \rho (I+C) - \delta V
+$$
+
+```{r}
+si <- new("odeModel",
+          main = function (time, init, parms) {
+            with(as.list(c(init, parms)), {
+              dS <- -S*b*(eta*kappa*I/(S+I) + a_h*mu*C + omega*V ) 
+              dI <- +S*b*(eta*kappa*I/(S+I) + a_h*mu*C + V ) - alpha*I
+              dC <- alpha*I - ((S+I)*a_h + D*a_d)*C
+              dV <- rho*(I+C) - delta*V
+              dId <- S*b*(eta*kappa*I/(S+I)) # infection by direct contact
+              dIc <- S*b*(a_h*mu*C) # infection by necrophagy
+              dIw <- S*b*omega*V # infection by water
+              list(c(dS, dI, dC, dV, dId, dIc, dIw))
+            })
+          },
+          parms = c(b = 0.000025, # hazard per virion; rough guess from RV_Heterogeneity_Tools_Presentation.pdf from Brunner et al. 2005. 
+                    eta = 250, #14320 = 3 contacts/min *60 min/h *24h/d, # contacts per day per L in 350L  tank, per Brunner et al. 2017
+                    kappa = 50, # 50 virions per contact; rough guess from Brunner et al. 2017. Ecology 98:576-582
+                    a_h = 0.25, # has to be per day per host, but there needs to be some conversion to keep units right.
+                    mu=10^5, # assuming 10^5 pfu per carcass
+                    omega = 1, # liters per day swept per larva; 10,000 cm * 0.1 cm cross section
+                    a_d = 0.7, # carcass (0.5g each) per day per scav/decomposer; rough approx from average of a between two ponds in Le Sage in prep
+                    D=1, # this is just a multiplier representing decomposer + scavenger density
+                    alpha = 1/18, # virulence in per day
+                    rho = 1000*(200/5)*(400/250), # virions per individual; rough guess from Brunner et al, in review, performance of nonlethal...
+                    # copies in reaction to copies per extraction to copies shed per animals in a day
+                    delta = 0.3 # 
+                    ),
+          times = c(from = 0, to = 100, by = 0.5),
+          init = c(S = 0.005, I = 5*10^(-7), C=0, V=0, Id=0, Ic=0, Iw=0), # densities per L
+          solver = "lsoda"
+)
+si <- sim(si)
+
+df <- data.frame(out(si))
+df <- gather(df, key=Class, value=Density, -time)
+ggplot(df, aes(x=time, y=Density, color=Class)) + 
+  geom_path() + 
+  facet_grid(Class ~ ., scales="free_y")
+
+```
+
+
+```{r}
+water <- expand.grid(b=2.5e-05, 
+                     eta=c(150,200), 
+                     kappa=50, 
+                     a_h = 0.25, 
+                     mu=0, #1e+05, no transmission from carcasses
+                     omega=1, # ignore, since this enters as omega*rho
+                     a_d=0.7,
+                     D=1, 
+                     alpha = 1/18, 
+                     rho=10^seq(3,7, length.out = 50), # 
+                     delta=seq(0, 0.5, length.out=50))
+water$Id <- 0
+water$Ic <- 0
+water$Iw <- 0
+
+for(i in 1:nrow(water)){
+  parms(si) <- water[i, 1:11]
+  si <- sim(si)
+  water[i, 12:14] <- out(si)[201, 6:8]
+  print(i)
+}
+
+write_csv(water, "water.csv")
+```
+
+```{r}
+summary(water)
+water <- mutate(water, PercWater = Iw/(Iw+Id))
+
+
+ggplot(filter(water, rho >= 10^4 & omega==1), aes(x=rho, y=delta, z=PercWater, fill=PercWater) ) +
+  geom_raster(interpolate = TRUE) + 
+  geom_contour(color="darkgray") + 
+  geom_contour_label(label=c(0.05,0.1,NA,0.2,NA,0.3,NA,0.4,NA,0.5,NA,0.6,NA,
+                             0.05,0.1,NA, 0.2, NA,0.3, NA, 0.4, NA, 0.5, NA))+ 
+  facet_grid(eta ~ ., labeller = label_bquote(rows=eta == .(eta))) + 
+  scale_x_log10(expression(paste("Viral shedding rate (", rho,")")), 
+                #breaks = scales::trans_breaks("log10", function(x) 10^x),
+                labels = scales::trans_format("log10", scales::math_format(10^.x))
+  ) + 
+  annotation_logticks(sides='b') +
+  scale_y_continuous(expression(paste("Rate of viral decay in water (", delta,")"))) + 
+  scale_fill_gradient2("Proportion\nof infections\nvia water", breaks = 0:10/10, 
+                       low = 'red', mid='white', high = 'darkblue', midpoint=0.5) + 
+  theme_minimal() + 
+  coord_cartesian(xlim=c(10^4.09, 10^5.91))
+
+ggsave("water.pdf", width=5.5,heigh=4)
+
+```
+
+
+```{r}
+carc <- expand.grid(b=2.5e-05, 
+                     eta=c(150,200), 
+                     kappa=50, 
+                     a_h = 1, # ignoring a_h, since a_h*mu enters as a product
+                     mu=10^seq(5, 7, length.out = 50), #transmission from carcasses
+                     omega=1,
+                     a_d=seq(0, 1, length.out=50),
+                     D=1, 
+                     alpha = c(1/18, 1/9), 
+                     rho=0, #10^(6:20/4), # No shedding, so no water-borne transmission
+                     delta=0)
+carc$Id <-0
+carc$Ic <-0
+carc$Iw <- 0
+
+for(i in 1:nrow(carc)){
+  parms(si) <- carc[i, 1:11]
+  si <- sim(si)
+  carc[i, 12:14] <- out(si)[201, 6:8]
+}
+# names(carc)[12:14] <- c("Id", "Ic", "Iw")
+write_csv(carc, "carc.csv")
+```
+
+```{r}
+carc <- carc %>% 
+  mutate(ahmu=a_h*mu, #product is the x-axis
+         PercCarc = Ic/(Ic+Id)) # this is the y-axis
+
+ggplot(carc, aes(x=ahmu, y=a_d, z=PercCarc, fill=PercCarc) ) +
+  geom_raster(interpolate = TRUE) + 
+  geom_contour(color="darkgray") + 
+  geom_contour_label(label=c(0.05,0.1,NA,0.2,NA,0.3,NA,0.4,NA,0.5,NA,
+                             0.05,0.1,NA,0.2,NA,0.3,NA,0.4,NA,0.5,NA,0.6,NA,
+                             0.05,0.1,NA,0.2,NA,0.3,NA,0.4,NA,
+                             0.05,0.1,NA,0.2,NA,0.3,NA,0.4,NA,0.5,NA)
+  ) +
+  facet_grid(eta ~ alpha, 
+             labeller=label_bquote(rows=eta == .(eta), 
+                                   cols=alpha == 1/.(1/alpha))) + 
+  scale_x_log10(expression( paste("Consumption rate (", lambda[h], ")", "" %*% "", "virions per carcass (", mu, ")")  ) , 
+                #breaks = scales::trans_breaks("log10", function(x) 10^x),
+                labels = scales::trans_format("log10", scales::math_format(10^.x))
+  ) + 
+  annotation_logticks(sides='b') +
+  scale_y_continuous(expression(paste("Rate of carcass loss to decomposers (", lambda[d],D, ")"))) + 
+  scale_fill_gradient2("Proportion\nof infections\nvia necrophagy", breaks = 0:10/10, 
+                       low = 'red', mid='white', high = 'darkblue', midpoint=0.5) + 
+  theme_minimal() + 
+  coord_cartesian(xlim=c(10^5.09, 10^6.91)) + 
+  theme(panel.spacing.x = unit(1, "lines"), legend.position="none")
+
+ggsave("carcasses.pdf", width=5.5,heigh=4)
+
+
+
+
+
+
+ggplot(carc, aes(x=ahmu, y=a_d, z=Ic/(Ic+Id), colour = ..level..) ) +
+  geom_contour() +
+  facet_grid(.~eta) + 
+  scale_x_log10()
+
+
+ggplot(test, aes(x=ahmu, color=a_d, group=a_d, y=Ic/(Ic+Id)) ) + 
+  geom_line() + facet_grid(.~eta)
+```
+

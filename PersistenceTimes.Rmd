@@ -1,0 +1,212 @@
+---
+title: "Persistence times across studies"
+author: "Jesse Brunner"
+date: "10/18/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+
+```
+
+# Studies with ATV at ASU in ~2002
+```{r}
+asu <- read_csv("Persistence_ATV_ASU2002.csv")
+asu$Titer <- 10^asu$Log10Titer
+qplot(Days, Titer, color=Trt, shape=Experiment, data=asu, geom="point") + 
+  scale_y_log10() + 
+  geom_smooth(method="lm") + 
+  facet_grid(. ~ Experiment)
+```
+Not sure what to do with the first experiment... it seems super steep under either condition! I think I'll ignore this and just use the second experiment where we've got more data (note: from multiple ponds, combine). 
+
+```{r}
+qplot(Days, Titer, color=Trt, data=subset(asu, Experiment=="WaterDegII"), geom="point") + 
+  scale_y_log10(breaks=10^(1:5)) + 
+  geom_smooth(method="lm")
+
+summary(lm(Log10Titer ~ Days, data=subset(asu, Experiment=="WaterDegII" & Trt=="Filtered")))
+1/0.027413 # T90
+0.027413/log10(exp(1)) # delta
+
+summary(lm(Log10Titer ~ Days, data=subset(asu, Experiment=="WaterDegII" & Trt=="Unfiltered")))
+1/0.16637 #T90
+0.16637/log10(exp(1)) # delta
+```
+
+
+
+# Reinauer et al. 2005 data (from thesis via Rachel)
+Reinauer, S., R. Bohm, and R. E. Marschang. 2005. Inactivation of tortoise viruses in the environment. Journal of Herpetological Medicine and Surgery 15:10-15.
+
+Persistence in water
+```{r}
+rwater <- read_csv("Reinauer_Water.csv")
+
+ggplot(rwater, aes(Day, LogTiter, color=factor(Temperature), shape=Replicate, linetype=Replicate)) + 
+  geom_point() + 
+  geom_smooth(method="lm", se=F) + 
+  facet_grid(Substrate ~ GermCarrier)
+
+# Tap water, 4C, rep A; First series
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="A" & Temperature==4)))
+1/0.010691 #T90
+
+# Tap water, 23C, rep A
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="A" & Temperature==23)))
+1/0.05337 #T90
+
+# Tap water, 37C, rep A
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="A" & Temperature==37)))
+1/0.02373  #T90
+
+
+
+# Tap water, 4C, rep B; Second Series
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="B" & Temperature==4)))
+1/0.003969 #T90
+
+# Tap water, 23C, rep B
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="B" & Temperature==23)))
+1/0.11512 #T90
+
+# Tap water, 37C, rep B
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="B" & Temperature==37)))
+1/0.13864  #T90
+
+
+
+# Tap water, 4C, no germ carrier, rep C; Second Series
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="C" & Temperature==4)))
+1/0.0004711 #T90
+
+# Tap water, 23C, no germ carrier, rep C
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="C" & Temperature==23)))
+1/0.09007 #T90
+
+# Tap water, 37C, no germ carrier, rep C
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="C" & Temperature==37)))
+1/0.17783  #T90
+
+
+
+
+# Pond water, 4C, rep D; First series
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="D" & Temperature==4)))
+1/0.038321 #T90
+
+# Pond water, 23C, rep D
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="D" & Temperature==23)))
+1/0.032753 #T90
+
+# Pond water, 37C, rep D
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="D" & Temperature==37)))
+1/0.027213  #T90
+
+
+# Pond water, 4C, rep E
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="E" & Temperature==4)))
+1/0.01147 #T90
+
+# Pond water, 23C, rep E
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="E" & Temperature==23)))
+1/0.03858 #T90
+
+# Pond water, 37C, rep E
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="E" & Temperature==37)))
+1/0.04392  #T90
+
+
+# Pond water, 4C, no germ carrier, rep F
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="F" & Temperature==4)))
+1/0.06174 #T90
+
+# Pond water, 23C, no germ carrier, rep F
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="F" & Temperature==23)))
+1/0.21734 #T90
+
+# Pond water, 37C, no germ carrier, rep F
+summary(lm(LogTiter ~ Day, data=subset(rwater, Replicate=="F" & Temperature==37)))
+1/0.20044  #T90
+```
+Filled in the values in the PersistenceTimes.csv spreadsheet
+
+Now the persistence in dirt?
+```{r}
+soil <- read_csv("Reinauer_Dirt.csv")
+
+
+ggplot(soil, aes(Day, LogTiter, color=Season)) + 
+  geom_point() + 
+  geom_smooth(method="lm", se=T) 
+
+# In the soil; spring
+summary(lm(LogTiter ~ Day, data=subset(soil, Season=="Spring")))
+1/0.023539 #T90
+
+# In the soil; summer
+summary(lm(LogTiter ~ Day, data=subset(soil, Season=="Summer")))
+1/0.3580 #T90
+```
+
+
+
+```{r}
+persist <- read_csv("PersistenceTimes.csv")
+
+#rate in log10 per day
+persist$d <- 1/persist$T90
+#rate in ln per day
+persist$d <- persist$d/log10(exp(1))
+
+# Refactor everything
+persist$Study <- factor(persist$Study, levels = c("Brunner unpubl. data (ATV)", "Reinauer et al. 2005", "Nazir et al. 2012", "Johnson & Brunner 2014", "Munro et al. 2016"), ordered = TRUE)
+persist$Activity <- factor(persist$Activity, levels = c("Microbial", "Enzymes (continual)", "Enzymes (initial)", "None"), ordered = TRUE)
+persist$Matrix <- factor(persist$Matrix, levels = c("Substrate", "Water with substrate", "Water"), ordered=TRUE)
+```
+
+plot T90s against temperature by activity 
+```{r}
+ggplot(persist, aes(x=Temperature, y=T90, color=Activity, fill=Activity, shape=Study, linetype=Study)) + 
+  geom_blank() + # required to keep legend in order
+  
+  geom_smooth(method="lm", formula = (y~I(1/x)), se=FALSE, alpha=0.25, size=0.5) +
+  geom_smooth(data=filter(persist, Study != "Johnson & Brunner 2014"), 
+              aes(shape=NULL, linetype=NULL), 
+              method="lm", formula = (y~I(1/x)), se=FALSE) + 
+  geom_point(size=2) + 
+  facet_grid(. ~ Matrix, scales="free_x", space="free_x") + 
+  scale_y_log10("T90 (days)", breaks=c(1,5,10,20,50,100,200,500,1000), minor_breaks=NULL) + 
+  scale_x_continuous("Temperature (°C)", breaks=c(4,15,20,23,30,37), minor_breaks=NULL) +
+    scale_shape_manual(values=LETTERS[1:5]) +
+  scale_linetype_discrete() + theme_minimal() + 
+  theme(legend.position="bottom", legend.direction = "vertical")
+
+ggsave("T90.pdf", width=6.5, height=5)
+```
+
+
+change to rates of decline, $\delta$ in the model
+```{r}
+
+ggplot(persist, aes(x=Temperature, y=d, color=Activity, fill=Activity, shape=Study, linetype=Study)) + 
+  geom_blank() + # required to keep legend in order
+  geom_smooth(method = "lm", se=FALSE, size=0.5, alpha=0.25) +
+  geom_smooth(data=filter(persist, Study != "Johnson & Brunner 2014"), 
+              aes(shape=NULL, linetype=NULL), 
+              method="lm", se=TRUE) + 
+  geom_point(size=2.5) + 
+  facet_grid(. ~ Matrix, scales="free_x", space="free_x") + 
+  scale_y_sqrt(expression(paste("Rate of viral decay (", delta, "; per day)")),
+               breaks=c(0.01, 0.05, 0.1, 0.2, 0.5, 1, 1.5, 2:4), minor_breaks=NULL) +
+  scale_x_continuous("Temperature (°C)", breaks=c(4,15,20,23,30,37), minor_breaks=NULL) +
+  coord_cartesian(ylim=c(0,4)) + 
+  scale_shape_manual(values=LETTERS[1:5]) +
+  scale_linetype_discrete() + theme_minimal() + 
+  theme(legend.position="bottom", legend.direction = "vertical")
+
+ggsave("Persistence.pdf", width=6.5, height=5)
+```
+

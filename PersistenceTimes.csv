@@ -1,0 +1,81 @@
+Study,Matrix,Temperature,Sterile_UnSterile,Filtered_Unfilter,Activity,T90,Notes
+Munro et al. 2016,Water,4.15,Unsterile,Unfiltered,Microbial,34.094,No replication
+Munro et al. 2016,Water,15,Unsterile,Unfiltered,Microbial,6.688,No replication
+Munro et al. 2016,Water,20.15,Unsterile,Unfiltered,Microbial,4.57,No replication
+Munro et al. 2016,Water,30,Unsterile,Unfiltered,Microbial,4.743,No replication
+Munro et al. 2016,Water,4.15,Sterile,Filtered,Enzymes (initial),178.338,No replication
+Munro et al. 2016,Water,15,Sterile,Filtered,Enzymes (initial),66.548,No replication
+Munro et al. 2016,Water,20.15,Sterile,Filtered,Enzymes (initial),28.285,No replication
+Munro et al. 2016,Water,30,Sterile,Filtered,Enzymes (initial),18.319,No replication
+Nazir et al. 2012,Water,19.9,Sterile,Unfiltered,Enzymes (continual),22,FV3-unfiltered
+Nazir et al. 2012,Water,19.9,Sterile,Filtered,Enzymes (initial),22,FV3-filtered
+Nazir et al. 2012,Water,19.9,Sterile,Unfiltered,Enzymes (continual),26,106/1/08 Ni-unfiltered
+Nazir et al. 2012,Water,19.9,Sterile,Filtered,Enzymes (initial),27,106/1/08 Ni-filtered
+Nazir et al. 2012,Water,19.9,Sterile,Unfiltered,Enzymes (continual),25,CH8/96-unfiltered
+Nazir et al. 2012,Water,19.9,Sterile,Filtered,Enzymes (initial),26,CH8/96-filtered
+Nazir et al. 2012,Water,19.9,Sterile,Unfiltered,Enzymes (continual),34,2000/99 Le-unfiltered
+Nazir et al. 2012,Water,19.9,Sterile,Filtered,Enzymes (initial),31,2000/99 Le-filtered
+Nazir et al. 2012,Water,3.9,Sterile,Unfiltered,Enzymes (continual),62,FV3-unfiltered
+Nazir et al. 2012,Water,3.9,Sterile,Filtered,Enzymes (initial),120,FV3-filtered
+Nazir et al. 2012,Water,3.9,Sterile,Unfiltered,Enzymes (continual),72,106/1/08 Ni-unfiltered
+Nazir et al. 2012,Water,3.9,Sterile,Filtered,Enzymes (initial),115,106/1/08 Ni-filtered
+Nazir et al. 2012,Water,3.9,Sterile,Unfiltered,Enzymes (continual),58,CH8/96-unfiltered
+Nazir et al. 2012,Water,3.9,Sterile,Filtered,Enzymes (initial),102,CH8/96-filtered
+Nazir et al. 2012,Water,3.9,Sterile,Unfiltered,Enzymes (continual),66,2000/99 Le-unfiltered
+Nazir et al. 2012,Water,3.9,Sterile,Filtered,Enzymes (initial),182,2000/99 Le-filtered
+Johnson & Brunner 2014,Water,23,Sterile,Filtered,Enzymes (initial),4.786483,PondAP17
+Johnson & Brunner 2014,Water,23,Sterile,Filtered,Enzymes (initial),24.024267,PondLTP
+Johnson & Brunner 2014,Water,23,Sterile,Filtered,Enzymes (initial),6.259029,PondMP
+Johnson & Brunner 2014,Water,23,Sterile,Filtered,Enzymes (initial),8.11142,PondP9
+Johnson & Brunner 2014,Water,23,Sterile,Filtered,Enzymes (initial),9.286552,PondPFF 
+Johnson & Brunner 2014,Water,23,Unsterile,Unfiltered,Microbial,1.7632523,PondAP17
+Johnson & Brunner 2014,Water,23,Unsterile,Unfiltered,Microbial,1.4006245,PondLTP
+Johnson & Brunner 2014,Water,23,Unsterile,Unfiltered,Microbial,0.7139835,PondMP
+Johnson & Brunner 2014,Water,23,Unsterile,Unfiltered,Microbial,0.6124655,PondP9
+Johnson & Brunner 2014,Water,23,Unsterile,Unfiltered,Microbial,0.9070006,PondPFF 
+Brunner unpubl. data (ATV),Water,22,Sterile,Filtered,None,36.47904,ATV; WaterDegII
+Brunner unpubl. data (ATV),Water,22,Unsterile,Unfiltered,Microbial,6.010699,ATV; WaterDegII
+Nazir et al. 2012,Substrate,4,Sterile,Unfiltered,Enzymes (continual),33,FV3
+Nazir et al. 2012,Substrate,4,Sterile,Unfiltered,Enzymes (continual),30,106/1/08 Ni
+Nazir et al. 2012,Substrate,4,Sterile,Unfiltered,Enzymes (continual),44,CH8/96
+Nazir et al. 2012,Substrate,4,Sterile,Unfiltered,Enzymes (continual),48,2000/99 Le
+Nazir et al. 2012,Substrate,20,Sterile,Unfiltered,Enzymes (continual),1.49,FV3
+Nazir et al. 2012,Substrate,20,Sterile,Unfiltered,Enzymes (continual),3.278,106/1/08 Ni
+Nazir et al. 2012,Substrate,20,Sterile,Unfiltered,Enzymes (continual),7.1607,CH8/96
+Nazir et al. 2012,Substrate,20,Sterile,Unfiltered,Enzymes (continual),5.168,2000/99 Le
+Munro et al. 2016,Water with substrate,4.15,Unsterile,Unfiltered,Microbial,10.372,Virus in water (60mL) with sediment (16g); Untreated
+Munro et al. 2016,Water with substrate,15,Unsterile,Unfiltered,Microbial,2.971,Virus in water (60mL) with sediment (16g); Untreated
+Munro et al. 2016,Water with substrate,20.15,Unsterile,Unfiltered,Microbial,1.507,Virus in water (60mL) with sediment (16g); Untreated
+Munro et al. 2016,Water with substrate,30,Unsterile,Unfiltered,Microbial,0.929,Virus in water (60mL) with sediment (16g); Untreated
+Munro et al. 2016,Water with substrate,4.15,Unsterile,Unfiltered,Microbial,16.232,Virus in water (60mL) with sediment (16g); sed dried first
+Munro et al. 2016,Water with substrate,15,Unsterile,Unfiltered,Microbial,2.478,Virus in water (60mL) with sediment (16g); sed dried first
+Munro et al. 2016,Water with substrate,20.15,Unsterile,Unfiltered,Microbial,2.386,Virus in water (60mL) with sediment (16g); sed dried first
+Munro et al. 2016,Water with substrate,30,Unsterile,Unfiltered,Microbial,1.016,Virus in water (60mL) with sediment (16g); sed dried first
+Munro et al. 2016,Water with substrate,4.15,Sterile,Unfiltered,None,15.022,Virus in water (60mL) with sediment (16g); dried and autoclaved
+Munro et al. 2016,Water with substrate,15,Sterile,Unfiltered,None,50.756,Virus in water (60mL) with sediment (16g); dried and autoclaved
+Munro et al. 2016,Water with substrate,20.15,Sterile,Unfiltered,None,31.97,Virus in water (60mL) with sediment (16g); dried and autoclaved
+Munro et al. 2016,Water with substrate,30,Sterile,Unfiltered,None,15.7,Virus in water (60mL) with sediment (16g); dried and autoclaved
+Munro et al. 2016,Water with substrate,4.15,Sterile,Unfiltered,None,20.877,Virus in water (60mL) with sediment (16g); autoclaved
+Munro et al. 2016,Water with substrate,15,Sterile,Unfiltered,None,27.751,Virus in water (60mL) with sediment (16g); autoclaved
+Munro et al. 2016,Water with substrate,20.15,Sterile,Unfiltered,None,25.444,Virus in water (60mL) with sediment (16g); autoclaved
+Munro et al. 2016,Water with substrate,30,Sterile,Unfiltered,None,2.974,Virus in water (60mL) with sediment (16g); autoclaved
+Reinauer et al. 2005,Water,4,Sterile,Unfiltered,None,93.53662,CH8/96 in drinking water; First series
+Reinauer et al. 2005,Water,23,Sterile,Unfiltered,None,18.73712,CH8/96 in drinking water; First series
+Reinauer et al. 2005,Water,37,Sterile,Unfiltered,None,42.14075,CH8/96 in drinking water; First series
+Reinauer et al. 2005,Water,4,Sterile,Unfiltered,None,251.9526,CH8/96 in drinking water; Second series
+Reinauer et al. 2005,Water,23,Sterile,Unfiltered,None,8.686588,CH8/96 in drinking water; Second series
+Reinauer et al. 2005,Water,37,Sterile,Unfiltered,None,7.212926,CH8/96 in drinking water; Second series
+Reinauer et al. 2005,Water,4,Sterile,Unfiltered,None,2122.692,CH8/96 in drinking water; no germ carrier
+Reinauer et al. 2005,Water,23,Sterile,Unfiltered,None,11.10248,CH8/96 in drinking water; no germ carrier
+Reinauer et al. 2005,Water,37,Sterile,Unfiltered,None,5.623348,CH8/96 in drinking water; no germ carrier
+Reinauer et al. 2005,Water,4,Sterile,Unfiltered,Enzymes (continual),26.09535,CH8/96 in lake water; First series
+Reinauer et al. 2005,Water,23,Sterile,Unfiltered,Enzymes (continual),30.53155,CH8/96 in lake water; First series
+Reinauer et al. 2005,Water,37,Sterile,Unfiltered,Enzymes (continual),36.74714,CH8/96 in lake water; First series
+Reinauer et al. 2005,Water,4,Sterile,Unfiltered,Enzymes (continual),87.18396,CH8/96 in lake water; Second series
+Reinauer et al. 2005,Water,23,Sterile,Unfiltered,Enzymes (continual),25.92017,CH8/96 in lake water; Second series
+Reinauer et al. 2005,Water,37,Sterile,Unfiltered,Enzymes (continual),22.76867,CH8/96 in lake water; Second series
+Reinauer et al. 2005,Water,4,Sterile,Unfiltered,Microbial,16.19695,CH8/96 in lake water; no germ carrier
+Reinauer et al. 2005,Water,23,Sterile,Unfiltered,Microbial,4.601086,CH8/96 in lake water; no germ carrier
+Reinauer et al. 2005,Water,37,Sterile,Unfiltered,Microbial,4.989024,CH8/96 in lake water; no germ carrier
+Reinauer et al. 2005,Substrate,NA,Sterile,Unfiltered,Enzymes (continual),42.48269,Soil in the spring
+Reinauer et al. 2005,Substrate,NA,Sterile,Unfiltered,Enzymes (continual),2.793296,Soil in the summer
